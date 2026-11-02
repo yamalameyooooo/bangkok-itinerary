@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Bangkok 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --surface-raised: #FFFFFF;
+    --border: #E8E6E1;
+    --border-light: #F0EEEA;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-tertiary: #9B9B9B;
+    --accent: #E07A5F;
+    --accent-light: #FDF0ED;
+    --blue: #5B8DEF;
+    --blue-light: #EDF2FD;
+    --green: #4CAF82;
+    --green-light: #ECF7F0;
+    --purple: #8B7EC8;
+    --purple-light: #F0EEF8;
+    --amber: #D4940A;
+    --amber-light: #FEF8E7;
+    --pink: #D45D8E;
+    --pink-light: #FCEEF4;
+    --teal: #3A9E95;
+    --teal-light: #E8F6F5;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: var(--surface);
+    padding: 20px 20px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 6px;
+  }
+
+  .h-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .h-badge.veg { background: var(--green-light); color: var(--green); }
+  .h-badge.card { background: var(--blue-light); color: var(--blue); }
+
+  .trip-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .trip-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* ─── Stats Bar ─── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 12px 20px 16px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  /* ─── Day Selector ─── */
+  .day-selector {
+    display: flex;
+    gap: 6px;
+    padding: 0 20px 14px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .day-selector::-webkit-scrollbar { display: none; }
+
+  .day-pill {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 56px;
+  }
+
+  .day-pill .day-num {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .day-pill .day-date {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+
+  .day-pill.active {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+  .day-pill.active .day-num { color: #fff; }
+  .day-pill.active .day-date { color: rgba(255,255,255,0.7); }
+
+  .day-pill.placeholder {
+    border-style: dashed;
+    opacity: 0.5;
+  }
+
+  /* ─── Day Content ─── */
+  .day-content { display: none; padding: 0 20px 120px; }
+  .day-content.active { display: block; }
+
+  .day-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+
+  .day-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  /* ─── Timeline ─── */
+  .timeline { position: relative; }
+
+  .tl-item {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .tl-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+    flex-shrink: 0;
+    padding-top: 16px;
+  }
+
+  .tl-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    white-space: nowrap;
+  }
+
+  .tl-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .tl-dot.flight { background: var(--blue); }
+  .tl-dot.sim { background: var(--teal); }
+  .tl-dot.transport { background: var(--purple); }
+  .tl-dot.hotel { background: var(--amber); }
+  .tl-dot.relax { background: var(--accent); }
+  .tl-dot.shopping { background: var(--pink); }
+  .tl-dot.food { background: var(--green); }
+
+  .tl-line {
+    width: 1.5px;
+    flex: 1;
+    background: var(--border);
+    margin-top: 6px;
+  }
+
+  .tl-card {
+    flex: 1;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+    margin-bottom: 6px;
+  }
+
+  .tl-card.expanded { box-shadow: var(--shadow-md); }
+
+  .tl-card-header {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 16px;
+    cursor: pointer;
+    gap: 12px;
+  }
+
+  .tl-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .tl-icon.flight { background: var(--blue-light); }
+  .tl-icon.sim { background: var(--teal-light); }
+  .tl-icon.transport { background: var(--purple-light); }
+  .tl-icon.hotel { background: var(--amber-light); }
+  .tl-icon.relax { background: var(--accent-light); }
+  .tl-icon.shopping { background: var(--pink-light); }
+  .tl-icon.food { background: var(--green-light); }
+
+  .tl-content { flex: 1; min-width: 0; }
+
+  .tl-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  .tl-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  .tl-price {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .tl-price .amount {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .tl-price .amount-sub {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .tl-price .pay-method {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+
+  .tl-chevron {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: transform 0.2s ease;
+  }
+
+  .tl-chevron svg {
+    width: 12px;
+    height: 12px;
+    stroke: var(--text-tertiary);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .tl-card.expanded .tl-chevron { transform: rotate(180deg); }
+
+  .tl-details {
+    display: none;
+    padding: 0 16px 16px;
+  }
+
+  .tl-card.expanded .tl-details { display: block; }
+
+  .tl-detail-divider {
+    height: 1px;
+    background: var(--border-light);
+    margin-bottom: 14px;
+  }
+
+  .detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .detail:last-child { margin-bottom: 0; }
+
+  .detail-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tag-card { background: var(--blue-light); color: var(--blue); }
+  .tag-cash { background: var(--green-light); color: var(--green); }
+  .tag-free { background: var(--purple-light); color: var(--purple); }
+  .tag-tip { background: var(--amber-light); color: var(--amber); }
+  .tag-veg { background: var(--green-light); color: var(--green); }
+
+  /* ─── Metro Route ─── */
+  .route-box {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin: 8px 0;
+  }
+
+  .route-stops {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 12px;
+  }
+
+  .route-stop {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 11px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .line-badge {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: #fff;
+  }
+
+  .line-bts { background: #5FA85F; }
+  .line-arl { background: #CF5C5C; }
+  .line-mrt { background: #4A7FCA; }
+
+  .route-arrow {
+    color: var(--text-tertiary);
+    font-size: 11px;
+  }
+
+  /* ─── Inspo Gallery ─── */
+  .inspo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .inspo-card {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .inspo-card {
+    background-size: cover;
+    background-position: center;
+  }
+
+  .inspo-card:nth-child(1) { background: linear-gradient(135deg, #FDEBD3, #FCEEF4); }
+  .inspo-card:nth-child(2) { background: linear-gradient(135deg, #D6EAF8, #E8F6F5); }
+  .inspo-card:nth-child(3) { background: linear-gradient(135deg, #F0EEF8, #FDEBD3); }
+  .inspo-card:nth-child(4) { background: linear-gradient(135deg, #E8F6F5, #EDF2FD); }
+
+  .inspo-card.has-img {
+    background-color: #e0e0e0;
+  }
+
+  .inspo-card.has-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .inspo-card .inspo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.65));
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  }
+
+  .inspo-card .inspo-overlay .inspo-label {
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .inspo-card .inspo-icon { font-size: 24px; margin-bottom: 6px; }
+  .inspo-card .inspo-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  /* ─── Tip Card ─── */
+  .tip {
+    display: flex;
+    gap: 10px;
+    background: var(--amber-light);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--amber);
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+
+  .tip-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── Day Summary Card ─── */
+  .day-summary-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .summary-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .summary-row .s-label { color: var(--text-secondary); }
+  .summary-row .s-value { font-weight: 600; color: var(--text-primary); }
+
+  .summary-row.total {
+    border-top: 1.5px solid var(--border-light);
+    margin-top: 8px;
+    padding-top: 14px;
+  }
+
+  .summary-row.total .s-label { font-weight: 600; color: var(--text-primary); }
+  .summary-row.total .s-value { font-size: 16px; color: var(--accent); }
+
+  /* ─── Cash vs Card Split ─── */
+  .split-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .split-box {
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+
+  .split-box.cash { background: var(--green-light); }
+  .split-box.card { background: var(--blue-light); }
+
+  .split-box .split-amount {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .split-box.cash .split-amount { color: var(--green); }
+  .split-box.card .split-amount { color: var(--blue); }
+
+  .split-box .split-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .split-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+  }
+
+  .split-note strong { color: var(--text-primary); font-weight: 600; }
+
+  /* ─── Placeholder Day ─── */
+  .placeholder {
+    background: var(--surface);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 48px 24px;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .placeholder-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.6; }
+
+  .placeholder p {
+    color: var(--text-tertiary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── Section Pages ─── */
+  .section-page { display: none; padding: 0 20px 120px; }
+  .section-page.active { display: block; }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+    padding-top: 8px;
+  }
+
+  .section-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  /* ─── Exchange Card ─── */
+  .exchange-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .exchange-rate {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .exchange-sub {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+  }
+
+  /* ─── Budget Card ─── */
+  .budget-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .budget-header .b-label { font-size: 13px; color: var(--text-secondary); }
+  .budget-header .b-value { font-size: 22px; font-weight: 700; color: var(--accent); }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #E8A087);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+  }
+
+  /* ─── Checklist ─── */
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .check-item:active { transform: scale(0.98); }
+  .check-item.done { opacity: 0.45; }
+
+  .check-box {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.15s ease;
+  }
+
+  .check-box svg {
+    width: 12px;
+    height: 12px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .check-item.done .check-box {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .check-item.done .check-box svg { opacity: 1; }
+
+  .check-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  .check-text small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  /* ─── Metro Section ─── */
+  .metro-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .metro-card.expanded { box-shadow: var(--shadow-md); }
+
+  .metro-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    gap: 12px;
+  }
+
+  .metro-dest {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .metro-dest .m-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .metro-dest .m-info {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 1px;
+  }
+
+  .metro-details {
+    display: none;
+    padding: 0 16px 16px;
+  }
+
+  .metro-card.expanded .metro-details { display: block; }
+
+  /* ─── Bottom Navigation ─── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.04);
+  }
+
+  .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    border: none;
+    background: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    padding: 6px 16px;
+    font-size: 10px;
+    font-family: inherit;
+    font-weight: 500;
+    transition: color 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav-btn.active { color: var(--accent); }
+
+  .nav-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* ─── Utilities ─── */
+  @media (min-width: 480px) {
+    .inspo-grid { grid-template-columns: repeat(4, 1fr); }
+    body { max-width: 480px; margin: 0 auto; box-shadow: var(--shadow-lg); min-height: 100vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-top">
+    <h1>Bangkok 2026</h1>
+    <div class="header-badges">
+      <span class="h-badge veg">Veg</span>
+      <span class="h-badge card">Visa</span>
+    </div>
+  </div>
+  <div class="trip-meta">
+    <span>30 Nov – 6 Dec</span>
+    <span>7 days</span>
+    <span>2 travellers</span>
+  </div>
+</div>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-value" id="totalSpend">₹91.2K</div>
+    <div class="stat-label">Total</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" id="totalCashTHB">2,840</div>
+    <div class="stat-label">Cash THB</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value" id="totalCardINR">₹75.2K</div>
+    <div class="stat-label">On Visa</div>
+  </div>
+</div>
+
+<!-- ═══ DAY SELECTOR ═══ -->
+<div class="day-selector" id="daySelector">
+  <button class="day-pill active" data-day="1"><span class="day-num">Day 1</span><span class="day-date">30 Nov</span></button>
+  <button class="day-pill" data-day="2"><span class="day-num">Day 2</span><span class="day-date">1 Dec</span></button>
+  <button class="day-pill placeholder" data-day="3"><span class="day-num">Day 3</span><span class="day-date">2 Dec</span></button>
+  <button class="day-pill placeholder" data-day="4"><span class="day-num">Day 4</span><span class="day-date">3 Dec</span></button>
+  <button class="day-pill placeholder" data-day="5"><span class="day-num">Day 5</span><span class="day-date">4 Dec</span></button>
+  <button class="day-pill placeholder" data-day="6"><span class="day-num">Day 6</span><span class="day-date">5 Dec</span></button>
+  <button class="day-pill placeholder" data-day="7"><span class="day-num">Day 7</span><span class="day-date">6 Dec</span></button>
+</div>
+
+<!-- ═══════════ DAY 1 ═══════════ -->
+<div class="day-content active" id="day1">
+  <div class="day-title">Arrival & Settle In</div>
+  <div class="day-subtitle">Flight lands 12:50 &middot; Immigration ~40 min &middot; Hotel by 3:45 PM &middot; Pool &middot; Shopping &middot; Massage &middot; Dinner</div>
+
+  <div class="timeline">
+
+    <!-- Flight -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">06:55</div>
+        <div class="tl-dot flight"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon flight">&#9992;&#65039;</div>
+          <div class="tl-content">
+            <div class="tl-name">Pune &rarr; Bangkok</div>
+            <div class="tl-desc">AI 6589 &middot; Lohegaon &rarr; Suvarnabhumi</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Booked</div>
+            <div class="pay-method">Pre-paid</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> Depart 06:55 IST &rarr; Arrive 12:50 BKK local time</div>
+          <div class="detail"><div class="detail-dot"></div> Flight duration ~4h 25m &middot; Thailand is 1.5 hrs ahead of IST</div>
+          <div class="detail"><div class="detail-dot"></div> Fill immigration card on flight. Keep hotel address ready: Ibis Styles Sukhumvit 4, 26 Sukhumvit Soi 4, Klongtoey, Bangkok 10110</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Immigration:</strong> Expect 30&ndash;60 min wait at passport control. BKK is the 9th busiest airport globally. Mid-day is slightly better than peak hours (5&ndash;8 AM, 4&ndash;7 PM)</div>
+          <div class="detail"><div class="detail-dot"></div> India has visa-free entry to Thailand (up to 60 days) &mdash; no VOA queue needed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIM Pickup -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">14:15</div>
+        <div class="tl-dot sim"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon sim">&#128241;</div>
+          <div class="tl-content">
+            <div class="tl-name">Pick Up Klook SIM</div>
+            <div class="tl-desc">2nd Floor, Suvarnabhumi &middot; 30GB data-only</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#8377;502</div>
+            <div class="pay-method">Pre-booked</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Location:</strong> Klook counter, Arrival Hall 2nd Floor, Gate 1 near KBank Counter</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>TrueMove H Tourist SIM</strong> &mdash; 30GB data, pre-book on Klook for <strong>&#8377;502</strong></div>
+          <div class="detail"><div class="detail-dot"></div> Activate SIM immediately. Check data is working before leaving airport</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card &middot; Online</span></div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> <strong>Klook link:</strong> TrueMove H Tourist SIM &mdash; &#8377;502. Note: Outgoing calls disabled by default on tourist SIMs since June 2025 &mdash; data works fine. Book 2&ndash;3 days before travel.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Airport to Hotel -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">14:30</div>
+        <div class="tl-dot transport"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon transport">&#128647;</div>
+          <div class="tl-content">
+            <div class="tl-name">Airport &rarr; Hotel via Metro</div>
+            <div class="tl-desc">ARL + BTS &middot; ~45 min</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;160</div>
+            <div class="amount-sub">&#8377;464</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="route-box">
+            <div class="route-stops">
+              <span class="route-stop">Suvarnabhumi <span class="line-badge line-arl">ARL</span></span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">Phaya Thai</span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+            </div>
+          </div>
+          <div class="detail"><div class="detail-dot"></div> ARL: Suvarnabhumi &rarr; Phaya Thai (~30 min, &#3647;45 / &#8377;131)</div>
+          <div class="detail"><div class="detail-dot"></div> BTS Sukhumvit: Phaya Thai &rarr; Nana (4 stops, &#3647;35 / &#8377;102)</div>
+          <div class="detail"><div class="detail-dot"></div> Walk ~5 min from BTS Nana Exit 3 to hotel</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB</span> Buy single journey token. Get a <strong>Rabbit Card</strong> at BTS (200 THB: 100 deposit + 100 value)</div>
+          <div class="detail"><div class="detail-dot"></div> For 2 persons: &#3647;160 (&#8377;464)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hotel Check-in -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">15:45</div>
+        <div class="tl-dot hotel"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon hotel">&#127976;</div>
+          <div class="tl-content">
+            <div class="tl-name">Check In &mdash; Ibis Styles Sukhumvit 4</div>
+            <div class="tl-desc">Nearest BTS: Nana &middot; 5 min walk</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Booked</div>
+            <div class="pay-method">Hotel</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> 26 Sukhumvit Soi 4, Klongtoey, Bangkok 10110</div>
+          <div class="detail"><div class="detail-dot"></div> Walking: BTS Nana (5 min), Terminal 21 (10 min)</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> at check-in for incidentals</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rooftop Pool -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">16:00</div>
+        <div class="tl-dot relax"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon relax">&#127946;</div>
+          <div class="tl-content">
+            <div class="tl-name">Rooftop Infinity Pool</div>
+            <div class="tl-desc">24th floor &middot; Shared with Novotel &middot; Closes 6 PM</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount"><span class="tag tag-free">Free</span></div>
+            <div class="pay-method">Hotel guest</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Hotel rooftop &mdash; take elevator to 24th floor, no travel needed</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Pool hours:</strong> Until <strong>6:00 PM only</strong> &mdash; rooftop converts to nightclub after 6 PM</div>
+          <div class="detail"><div class="detail-dot"></div> Pool is shared with adjacent Novotel (same Accor building) &mdash; can get crowded, go early</div>
+          <div class="detail"><div class="detail-dot"></div> 270&deg; panoramic city views &middot; You have ~2 hours before pool closes at 6 PM &mdash; make it count!</div>
+          <div class="detail"><div class="detail-dot"></div> Use DJI Osmo Pocket (buying at EmSphere after pool &mdash; use phone camera for now)</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-tip">Pool Inspo Photos</span></div>
+
+          <div class="inspo-grid">
+            <div class="inspo-card has-img">
+              <img src="https://paliparan.com/wp-content/uploads/2020/04/ibis-sukhumvit-pool.jpg" alt="Ibis Styles Sukhumvit 4 rooftop pool daytime" loading="lazy">
+              <div class="inspo-overlay"><span class="inspo-label">Daytime pool &middot; city views</span></div>
+            </div>
+            <div class="inspo-card has-img">
+              <img src="https://paliparan.com/wp-content/uploads/2020/04/ibis-sukhumvit-pool-2.jpg" alt="Infinity edge pool with skyline" loading="lazy">
+              <div class="inspo-overlay"><span class="inspo-label">Infinity edge &middot; skyline</span></div>
+            </div>
+            <div class="inspo-card has-img">
+              <img src="https://paliparan.com/wp-content/uploads/2020/04/ibis-sukhumvit-pool-night.jpg" alt="Night pool with city lights" loading="lazy">
+              <div class="inspo-overlay"><span class="inspo-label">Night view &middot; city lights</span></div>
+            </div>
+            <div class="inspo-card has-img">
+              <img src="https://paliparan.com/wp-content/uploads/2020/04/ibis-sukhumvit-pool-night-2.jpg" alt="Rooftop pool night ambiance" loading="lazy">
+              <div class="inspo-overlay"><span class="inspo-label">Rooftop night ambiance</span></div>
+            </div>
+          </div>
+
+          <div class="detail" style="margin-top:10px"><div class="detail-dot"></div> <strong>Couple shot ideas:</strong></div>
+          <div class="detail"><div class="detail-dot"></div> Sitting on infinity edge, legs in water, skyline behind</div>
+          <div class="detail"><div class="detail-dot"></div> Back-to-camera silhouette looking at city</div>
+          <div class="detail"><div class="detail-dot"></div> Reflection shot &mdash; city mirrored in pool water</div>
+          <div class="detail"><div class="detail-dot"></div> Slow-mo splash with DJI Osmo 4K/240fps</div>
+          <div class="detail"><div class="detail-dot"></div> Poolside toast with Bangkok towers behind</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> Pool closes at 6 PM sharp. With immigration delays you&rsquo;ll check in ~3:45 PM &mdash; head straight to pool by 4 PM. Use phone camera now, buy DJI after pool closes.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7-Eleven -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">18:00</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#127978;</div>
+          <div class="tl-content">
+            <div class="tl-name">7-Eleven Run</div>
+            <div class="tl-desc">Across the street from hotel &middot; Walk 1 min</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;280</div>
+            <div class="amount-sub">&#8377;812</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk across Sukhumvit Soi 4 &mdash; 7-Eleven is literally opposite the hotel, 1 min</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Soffell Mosquito Repellent (Pink)</strong> &mdash; 80ml Floral Spray, &#3647;65&ndash;75 (&#8377;189&ndash;218). 12% DEET, 7-hour protection. Pink bottle, near sunscreen aisle</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Drinks &amp; snacks price list:</strong></div>
+          <div class="detail" style="padding-left:16px"><div class="detail-dot"></div> 2&times; Water 1.5L: &#3647;14&ndash;20 each (&#8377;41&ndash;58)</div>
+          <div class="detail" style="padding-left:16px"><div class="detail-dot"></div> 2&times; Thai Milk Tea: &#3647;20&ndash;30 each (&#8377;58&ndash;87)</div>
+          <div class="detail" style="padding-left:16px"><div class="detail-dot"></div> 2&times; Coconut Water: &#3647;25&ndash;30 each (&#8377;73&ndash;87)</div>
+          <div class="detail" style="padding-left:16px"><div class="detail-dot"></div> Snacks (dried mango, Mama veg cup): &#3647;50&ndash;80 (&#8377;145&ndash;232)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Estimated basket for 2:</strong> ~&#3647;280 (&#8377;812)</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB &middot; ~280 THB</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DJI at EmSphere -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">18:15</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#127909;</div>
+          <div class="tl-content">
+            <div class="tl-name">DJI Osmo Pocket 4P &mdash; EmSphere</div>
+            <div class="tl-desc">DJI Experience Store &middot; 2F &middot; BTS Phrom Phong</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;22,390</div>
+            <div class="amount-sub">&#8377;64,931</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Nana &rarr; Phrom Phong (2 stops, ~5 min). Walk into EmSphere mall</div>
+          <div class="route-box">
+            <div class="route-stops">
+              <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">Phrom Phong (2 stops)</span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">EmSphere 2F</span>
+            </div>
+          </div>
+          <div class="detail" style="margin-top:8px"><div class="detail-dot"></div> <strong>DJI Experience Store</strong> &mdash; Room 2C05, 2nd Floor, EmSphere</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Phone:</strong> 081-524-6690 (call ahead to confirm Pocket 4P stock)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>DJI Osmo Pocket 4P &mdash; Vlog Combo</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price: &#3647;22,390 (&#8377;64,931)</strong> &mdash; includes battery handle + wireless mic</div>
+          <div class="detail"><div class="detail-dot"></div> Standard Combo: &#3647;19,990 (&#8377;57,971) &mdash; camera only, no extra battery</div>
+          <div class="detail"><div class="detail-dot"></div> Available in Black &amp; Pearl White (new color, Oct 2026)</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> No surcharge at DJI authorized store</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> Ask for <strong>VAT Refund Form</strong> (PP10) &mdash; claim 7% back (~&#3647;1,567 / &#8377;4,544) at departure airport. Much cheaper than India (&#8377;85K on Amazon India).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal 21 -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">19:00</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#128717;</div>
+          <div class="tl-content">
+            <div class="tl-name">Terminal 21 Shopping</div>
+            <div class="tl-desc">BTS Asok &middot; Themed floors &middot; Affordable fashion</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;500</div>
+            <div class="amount-sub">&#8377;1,450</div>
+            <div class="pay-method">Cash / Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Phrom Phong &rarr; Asok (1 stop, ~3 min). Terminal 21 connected to BTS Asok</div>
+          <div class="route-box">
+            <div class="route-stops">
+              <span class="route-stop">Phrom Phong <span class="line-badge line-bts">BTS</span></span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">Asok (1 stop)</span>
+              <span class="route-arrow">&rarr;</span>
+              <span class="route-stop">Terminal 21</span>
+            </div>
+          </div>
+          <div class="detail"><div class="detail-dot"></div> Themed floors: Caribbean, Tokyo, London, Istanbul, San Francisco</div>
+          <div class="detail"><div class="detail-dot"></div> Affordable fashion, souvenirs, quirky accessories</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 10 PM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Massage -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">20:00</div>
+        <div class="tl-dot relax"></div>
+
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon relax">&#128134;</div>
+          <div class="tl-content">
+            <div class="tl-name">Full Body Thai Massage</div>
+            <div class="tl-desc">P&rsquo;s Thai Massage 2 &middot; Below BTS Nana &middot; &#3647;350/hr each</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;700</div>
+            <div class="amount-sub">&#8377;2,030</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk 3 min from hotel &mdash; right below BTS Nana station</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>P&rsquo;s Thai Massage 2</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 137/4 Sukhumvit Rd, Khlong Toei, Bangkok 10110 (below Nana BTS)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Treatment:</strong> Thai Body Massage (60 min)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price:</strong> <strong>&#3647;350 (&#8377;1,015) per person</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>For 2 people:</strong> <strong>&#3647;700 (&#8377;2,030)</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> Daily 10:00 AM &ndash; 12:00 AM</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Contact:</strong> +66 2000 398 9</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Google Maps:</strong> <a href="https://maps.app.goo.gl/xEiNamCcE99mpJ4x5" style="color:var(--blue);text-decoration:none;font-weight:500;">Open in Maps</a></div>
+          <div class="detail"><div class="detail-dot"></div> Clean, air-conditioned, professional staff &middot; Walk-ins welcome</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dinner -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">21:15</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line" style="background:transparent"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#127834;</div>
+          <div class="tl-content">
+            <div class="tl-name">Vegetarian Dinner</div>
+            <div class="tl-desc"><span class="tag tag-veg">Pure Veg</span></div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;1,000</div>
+            <div class="amount-sub">&#8377;2,900</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk 8 min from hotel &rarr; Sukhumvit Soi 11 (under 1 km, no metro needed)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Recommended: Veganerie Nana</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 171 Soi Sukhumvit 11, G Floor, Ambassador Hotel, Bangkok 10110</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Rating:</strong> 4.8&#9733; on HappyCow &middot; 5-star rated &middot; Popular vegan chain</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Menu:</strong> 100% plant-based &mdash; burgers, Thai curries, pasta, smoothie bowls, desserts</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Mains:</strong> &#3647;150&ndash;280 each &middot; Meal for 2: &#3647;800&ndash;1,200 (&#8377;2,320&ndash;3,480)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10:30&ndash;22:30 daily</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> accepted</div>
+          <div class="detail" style="margin-top:8px"><div class="detail-dot"></div> <strong>Alternatives nearby:</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Dosa King</strong> (Soi 11/1, 8 min walk) &mdash; Pure veg Indian, est. 2002, 370&ndash;920 THB/person</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>May Veggie Home Express</strong> (Soi 23, 15 min walk or 1 BTS stop to Asok) &mdash; Vegan Thai, 80&ndash;180 THB/main, &#8377;980&ndash;1,715 for 2</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Na Aroon</strong> (Soi 1, 10 min walk) &mdash; Organic Thai-Western veg, Ariyasom Villa</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Day 1 Cost Summary -->
+  <div class="day-summary-card">
+    <div class="summary-title">Day 1 Expenses</div>
+    <div class="summary-row"><span class="s-label">Klook TrueMove H SIM</span><span class="s-value">&#8377;502</span></div>
+    <div class="summary-row"><span class="s-label">Metro (ARL + BTS &times; 2 pax)</span><span class="s-value">&#3647;160 &middot; &#8377;464</span></div>
+    <div class="summary-row"><span class="s-label">7-Eleven (Soffell + drinks + snacks)</span><span class="s-value">&#3647;280 &middot; &#8377;812</span></div>
+    <div class="summary-row"><span class="s-label">DJI Pocket 4P Vlog (EmSphere)</span><span class="s-value">&#3647;22,390 &middot; &#8377;64,931</span></div>
+    <div class="summary-row"><span class="s-label">Terminal 21 shopping</span><span class="s-value">&#3647;500 &middot; &#8377;1,450</span></div>
+    <div class="summary-row"><span class="s-label">P&rsquo;s Thai Massage 2 &times; 2</span><span class="s-value">&#3647;700 &middot; &#8377;2,030</span></div>
+    <div class="summary-row"><span class="s-label">Dinner &mdash; Veganerie Nana &times; 2</span><span class="s-value">&#3647;1,000 &middot; &#8377;2,900</span></div>
+    <div class="summary-row total"><span class="s-label">Day 1 Total</span><span class="s-value">&#3647;25,030 &middot; &#8377;73,089</span></div>
+
+    <div class="split-row">
+      <div class="split-box cash">
+        <div class="split-amount">&#3647;1,340</div>
+        <div class="split-label">Cash (&#8377;3,886)</div>
+      </div>
+      <div class="split-box card">
+        <div class="split-amount">&#3647;23,890</div>
+        <div class="split-label">Visa Card (&#8377;69,281)</div>
+      </div>
+    </div>
+
+    <div class="split-note">
+      <strong>Cash:</strong> ARL+BTS &#3647;160, Rabbit Card &#3647;200, 7-Eleven &#3647;280, P&rsquo;s Massage &#3647;700<br>
+      <strong>Card:</strong> Klook SIM &#8377;502, DJI &#3647;22,390, dinner &#3647;1,000, shopping &#3647;500<br>
+      <strong>Rate:</strong> 1 THB = &#8377;2.90
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DAY 2–6 PLACEHOLDERS ═══ -->
+<div class="day-content" id="day2">
+  <div class="day-title">Shopping, Cafes &amp; Night Market</div>
+  <div class="day-subtitle">Hotel switch &middot; Malls all day &middot; Stolen Sala &middot; Jodd Fairs &middot; ICON Siam fountain 8 PM &middot; Nails &amp; hair spa (evening, fresh for birthday!)</div>
+
+  <div class="timeline">
+
+    <!-- Breakfast -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">08:00</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#127858;</div>
+          <div class="tl-content">
+            <div class="tl-name">Breakfast at Hotel</div>
+            <div class="tl-desc">Ibis Styles Sukhumvit 4 &middot; Included in stay</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount"><span class="tag tag-free">Free</span></div>
+            <div class="pay-method">Included</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> Breakfast included in room rate &mdash; eat well, long day ahead!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout + Luggage -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">09:30</div>
+        <div class="tl-dot hotel"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon hotel">&#127976;</div>
+          <div class="tl-content">
+            <div class="tl-name">Checkout &amp; Switch Hotels</div>
+            <div class="tl-desc">Ibis Styles &rarr; Ibis Bangkok Sukhumvit 4 &middot; 500m walk</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Pre-booked</div>
+            <div class="pay-method">Hotel</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Checkout:</strong> Ibis Styles Bangkok Sukhumvit 4</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>New hotel:</strong> Ibis Bangkok Sukhumvit 4 &mdash; 500m away on same Soi 4</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Check-in:</strong> After 2 PM &mdash; drop luggage at reception</div>
+          <div class="detail"><div class="detail-dot"></div> Both are Accor properties &mdash; ask reception to transfer luggage</div>
+          <div class="detail"><div class="detail-dot"></div> Room will be ready when you return at night</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7-Eleven HYA -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">09:45</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#127978;</div>
+          <div class="tl-content">
+            <div class="tl-name">7-Eleven &mdash; HYA Serum</div>
+            <div class="tl-desc">BUA HYA 15X Plus Alpha Arbutin &middot; Any branch</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;100</div>
+            <div class="amount-sub">&#8377;290</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Product:</strong> BUA HYA 15X Plus 24K Alpha Arbutin Booster (10ml)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price:</strong> ~&#3647;79&ndash;149 (&#8377;229&ndash;432) &mdash; skincare aisle</div>
+          <div class="detail"><div class="detail-dot"></div> Also available at Watsons &amp; Boots if out of stock</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EmQuartier + Emporium -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">10:15</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#127979;</div>
+          <div class="tl-content">
+            <div class="tl-name">EmQuartier + Emporium Malls</div>
+            <div class="tl-desc">BTS Phrom Phong &middot; Connected via skywalk</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Browse</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Nana &rarr; Phrom Phong (2 stops, ~5 min)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>EmQuartier + Emporium</strong> &mdash; connected via elevated skywalk at BTS Phrom Phong</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>EmQuartier:</strong> Trendy fashion, lifestyle brands, rooftop garden</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Emporium:</strong> Premium brands, fashion, electronics</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 10 PM daily</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stolen Sala -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">12:00</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#9749;</div>
+          <div class="tl-content">
+            <div class="tl-name">Stolen Sala Rooftop Cafe</div>
+            <div class="tl-desc">Pinterest-worthy &middot; BTS Ploenchit &middot; City views</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;900</div>
+            <div class="amount-sub">&#8377;2,610</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Phrom Phong &rarr; Ploenchit (3 stops west, ~6 min). Walk 3 min from station</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Phrom Phong <span class="line-badge line-bts">BTS</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Ploenchit (3 stops)</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 7th Floor, Canvas Ploenchit Building, 546 Phloen Chit Rd (opposite Central Embassy)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 9 AM &ndash; 9 PM daily</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Prices:</strong> Cocoa &#3647;110 (&#8377;319), Thai tea &#3647;100 (&#8377;290), meals &#3647;300&ndash;500 (&#8377;870&ndash;1,450)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>For 2:</strong> ~&#3647;800&ndash;1,000 (&#8377;2,320&ndash;2,900) + 17% service charge &amp; VAT</div>
+          <div class="detail"><div class="detail-dot"></div> Minimalist, Instagram-worthy interior &middot; City skyline views &middot; Smart casual</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-veg">Veg options</span> Acai bowls, poke bowls, waffles</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEA LIFE Bangkok -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">13:45</div>
+        <div class="tl-dot activity"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon activity">&#128011;</div>
+          <div class="tl-content">
+            <div class="tl-name">SEA LIFE Bangkok Ocean World</div>
+            <div class="tl-desc">Siam Paragon B1&ndash;B2 &middot; 400+ species &middot; Ocean tunnel</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;1,600</div>
+            <div class="amount-sub">&#8377;4,640</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Ploenchit &rarr; Siam (2 stops, ~4 min). Enter Siam Paragon, take escalator to B1</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Ploenchit <span class="line-badge line-bts">BTS</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Siam (2 stops)</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Siam Paragon B1</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> Siam Paragon B1&ndash;B2, 991 Rama I Rd, Pathum Wan, Bangkok 10330</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price:</strong> ~&#3647;800 (&#8377;2,320) per person online via Klook (save 27% vs gate price &#3647;1,090)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>For 2:</strong> ~&#3647;1,600 (&#8377;4,640)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Duration:</strong> ~1.5&ndash;2 hours</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Highlights:</strong> Ocean tunnel walk-through, 400+ species, 30,000 fish, touch pools, penguin zone</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 8 PM (last entry 7:30 PM)</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> Pre-book on Klook for skip-the-line + discount</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> Book on Klook (en-IN) in advance for &#8377;2,320/person instead of &#3647;1,090 (&#8377;3,161) at the gate. E-ticket &mdash; show QR code at entry.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Siam Square: True Alpha Hub -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">15:30</div>
+        <div class="tl-dot activity"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon activity">&#128248;</div>
+          <div class="tl-content">
+            <div class="tl-name">True Alpha Hub &mdash; Photobooth</div>
+            <div class="tl-desc">Siam Square Soi 3 &middot; 4 floors &middot; LED screen</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;160</div>
+            <div class="amount-sub">&#8377;464</div>
+            <div class="pay-method">Cash / Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> BTS Ploenchit &rarr; Siam (2 stops, ~4 min). Walk 2 min from BTS Siam Exit 4 to Soi 3</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Ploenchit <span class="line-badge line-bts">BTS</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Siam (2 stops)</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 262/7, 264 Siam Square Soi 3, Pathum Wan, Bangkok 10330</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Photobooth:</strong> &#3647;160 (&#8377;464) per session &middot; Your photo appears on the giant LED screen outside!</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Floors:</strong> F2: live streaming lab, F3: gaming &amp; photo rooms, F4: music &amp; art</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 10 PM &middot; Rating: 4.8&#9733;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mango Sticky Rice -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">16:00</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#127840;</div>
+          <div class="tl-content">
+            <div class="tl-name">Mango Sticky Rice</div>
+            <div class="tl-desc">Mango Tango &middot; Siam Square Soi 3 (same spot)</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;250</div>
+            <div class="amount-sub">&#8377;725</div>
+            <div class="pay-method">Cash / Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Same Siam Square Soi 3 &mdash; walk 1 min from True Alpha Hub</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Mango Tango</strong> &mdash; famous mango dessert cafe</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price:</strong> &#3647;120&ndash;220 (&#8377;348&ndash;638) per serving</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-veg">Pure Veg</span> Mango sticky rice is naturally vegetarian</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beautrium -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">16:15</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#128132;</div>
+          <div class="tl-content">
+            <div class="tl-name">Beautrium &mdash; Skincare</div>
+            <div class="tl-desc">Siam Square Soi 7 &middot; Flagship &middot; 1,000+ brands</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Budget</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk 3 min from Soi 3 to Soi 7 within Siam Square</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> Siam Square Soi 7, 430/41 Rama 1 Rd, Pathum Wan 10330</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Flagship:</strong> 4 storeys, 1,500 sqm &middot; 1,000+ beauty brands</div>
+          <div class="detail"><div class="detail-dot"></div> F1: Makeup &amp; perfume, F2: Skincare &amp; haircare, F3&ndash;F4: Premium skincare</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> ~09:30&ndash;22:00 daily</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> VAT refund available with passport for purchases over &#3647;2,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENTLEWOMAN -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">16:45</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#128090;</div>
+          <div class="tl-content">
+            <div class="tl-name">GENTLEWOMAN Flagship</div>
+            <div class="tl-desc">Siam Square Soi 7 &middot; Same street as Beautrium &middot; 3 floors</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Browse</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk 1 min &mdash; same Siam Square Soi 7 as Beautrium</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 430/41-44 Siam Square Soi 7, Rama 1 Rd, Pathum Wan 10330</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Store:</strong> 700 sqm flagship &middot; 3 floors &mdash; clothing, bags, accessories</div>
+          <div class="detail"><div class="detail-dot"></div> Bag customization section on top floor</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 10 PM daily</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span> Tax refund available for tourists</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MBK -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">17:00</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#128717;</div>
+          <div class="tl-content">
+            <div class="tl-name">MBK Center &mdash; Pajama Sets</div>
+            <div class="tl-desc">BTS National Stadium &middot; Wholesale sleepwear &amp; accessories</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;500</div>
+            <div class="amount-sub">&#8377;1,450</div>
+            <div class="pay-method">Cash</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute:</strong> Walk 10 min from Siam Square via skywalk, or BTS Siam &rarr; National Stadium (1 stop, Silom line)</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Siam Square</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Walk 10 min / BTS 1 stop</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">MBK (BTS National Stadium)</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Buy pajama sets here!</strong> Wholesale shops on 3rd&ndash;5th floors</div>
+          <div class="detail"><div class="detail-dot"></div> Pajama sets from &#3647;150&ndash;300 (&#8377;435&ndash;870) per set &mdash; much cheaper than brand stores</div>
+          <div class="detail"><div class="detail-dot"></div> Also: affordable clothes, bags, phone accessories, souvenirs</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Bargain always</strong> &mdash; ask for discount on 2+ items</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> 10 AM &ndash; 10 PM</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB</span> &mdash; better prices with cash, some accept cards</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tha Chang Pier + Tourist Boat -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">18:00</div>
+        <div class="tl-dot transport"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon transport">&#9962;&#65039;</div>
+          <div class="tl-content">
+            <div class="tl-name">Tourist Boat to ICON Siam</div>
+            <div class="tl-desc">MBK &rarr; Tha Chang Pier &rarr; Chao Phraya boat &rarr; ICON Siam</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;180</div>
+            <div class="amount-sub">&#8377;522</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Step 1 &mdash; MBK to Tha Chang Pier:</strong> Grab taxi ~&#3647;100 (&#8377;290), 15&ndash;20 min</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">MBK Center</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Grab &#3647;100 / 15 min</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Tha Chang Pier</span>
+          </div></div>
+          <div class="detail" style="margin-top:8px"><div class="detail-dot"></div> <strong>Step 2 &mdash; Tourist Boat to ICONSIAM:</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Chao Phraya Tourist Boat</strong> (Blue Flag) &mdash; &#3647;40 (&#8377;116) per person &times; 2 = &#3647;80</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Duration:</strong> ~20 min scenic ride downstream</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Frequency:</strong> Every 30 min &middot; Last boat from Tha Chang southbound: ~19:07</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Tha Chang Pier</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Tourist Boat &#3647;40/person</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">ICONSIAM Pier</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Views:</strong> Grand Palace, Wat Arun, temples, riverside skyline at sunset</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Total cost:</strong> Grab &#3647;100 + boat &#3647;80 = &#3647;180 (&#8377;522) for both</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash THB</span> Buy tickets at pier counter</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> Leave MBK by 17:30 to reach Tha Chang by 18:00. Catch 18:00&ndash;18:30 boat &rarr; arrive ICONSIAM ~18:30&ndash;19:00. Plenty of time to explore before 8 PM fountain show. Sunset over Wat Arun from the boat is stunning!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ICON Siam -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">18:45</div>
+        <div class="tl-dot activity"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon activity">&#127750;</div>
+          <div class="tl-content">
+            <div class="tl-name">ICON Siam &mdash; Fountain Show 8 PM</div>
+            <div class="tl-desc">Riverside mall &middot; Free show &middot; 400m water fountain</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount"><span class="tag tag-free">Free</span></div>
+            <div class="pay-method">Show is free</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Arrived via Tourist Boat</strong> &mdash; dock at ICONSIAM Pier, walk into mall</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Fountain show:</strong> Daily at <strong>7 PM &amp; 8 PM</strong> (~15 min each) &mdash; free, outdoor riverside</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>What:</strong> SE Asia&rsquo;s longest multimedia water fountain (400m+, water up to 35m high)</div>
+          <div class="detail"><div class="detail-dot"></div> May cancel in heavy rain</div>
+          <div class="detail"><div class="detail-dot"></div> Arrive by 19:45 to get a good viewing spot at the riverside terrace</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> If you arrive early enough, catch the <strong>7 PM show too</strong> as backup in case of 8 PM rain cancellation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dinner at ICON Siam -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">20:15</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#127834;</div>
+          <div class="tl-content">
+            <div class="tl-name">Vegetarian Dinner at ICON Siam</div>
+            <div class="tl-desc"><span class="tag tag-veg">Pure Veg</span> &middot; Sook Siam food hall</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;800</div>
+            <div class="amount-sub">&#8377;2,320</div>
+            <div class="pay-method">Visa Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Sook Siam</strong> (G Floor) &mdash; indoor floating market food hall with veg stalls</div>
+          <div class="detail"><div class="detail-dot"></div> Look for &ldquo;&#3648;&#3592;&rdquo; (Jay/vegan) marked stalls &mdash; yellow flag with red text</div>
+          <div class="detail"><div class="detail-dot"></div> Veg Pad Thai, mango sticky rice, coconut ice cream, fruit shakes</div>
+          <div class="detail"><div class="detail-dot"></div> Meal for 2: ~&#3647;600&ndash;1,000 (&#8377;1,740&ndash;2,900)</div>
+          <div class="detail"><div class="detail-dot"></div> Browse the Sook Siam indoor floating market on G Floor</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-card">Visa Card</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jodd Fairs -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">21:15</div>
+        <div class="tl-dot shopping"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon shopping">&#127749;</div>
+          <div class="tl-content">
+            <div class="tl-name">Jodd Fairs Night Market</div>
+            <div class="tl-desc">Last stop! &middot; Tops from &#3647;100 &middot; Open till 1 AM</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">~&#3647;300</div>
+            <div class="amount-sub">&#8377;870</div>
+            <div class="pay-method">Cash THB</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute from ICON Siam:</strong> All metro, ~25 min, no Grab needed</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Charoen Nakhon</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Krung Thon Buri <span class="line-badge line-bts">BTS</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Sala Daeng</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Silom <span class="line-badge line-mrt">MRT</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Thailand Cultural Centre</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> Gold Line to Krung Thon Buri &rarr; BTS Silom line to Sala Daeng (4 stops) &rarr; walk to MRT Silom &rarr; MRT to Thailand Cultural Centre (7 stops)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Address:</strong> 129 Ratchadaphisek Rd, Din Daeng, Bangkok 10400</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> Daily 5 PM &ndash; 1 AM &middot; Open on Tuesday &#9989;</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Shopping:</strong> Tops from &#3647;100 (&#8377;290)! Clothes, accessories, vintage</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Food:</strong> Veg options, coconut ice cream, fruit smoothies</div>
+          <div class="detail"><div class="detail-dot"></div> <span class="tag tag-cash">Cash or Thai QR</span></div>
+          <div class="detail"><div class="detail-dot"></div> Leave by 23:00 to reach Homsleepsalon by 23:30</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Homsleepsalon - FINAL STOP -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">23:30</div>
+        <div class="tl-dot relax"></div>
+        <div class="tl-line" style="background:transparent"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon relax">&#128135;</div>
+          <div class="tl-content">
+            <div class="tl-name">Hair Spa &mdash; Homsleepsalon</div>
+            <div class="tl-desc">BTS Asok &middot; 11:30 PM reservation &middot; Fresh hair for birthday!</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;2,000</div>
+            <div class="amount-sub">&#8377;5,800</div>
+            <div class="pay-method">Cash / Card</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Commute from Jodd Fairs:</strong> MRT Thailand Cultural Centre &rarr; MRT Sukhumvit / BTS Asok (~15 min). Leave by 23:00</div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Jodd Fairs <span class="line-badge line-mrt">MRT</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Thailand Cultural Centre</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">MRT Sukhumvit / BTS Asok</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Homsleepsalon &mdash; Asok Branch</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Location:</strong> Near BTS Asok / MRT Sukhumvit</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Hours:</strong> Open till <strong>2:00 AM</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Reservation:</strong> 11:30 PM sharp &mdash; pre-booked</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Treatment:</strong> Vietnamese-style relaxing hair wash + head spa</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Price:</strong> &#3647;1,000 (&#8377;2,900) per person &times; 2 = <strong>&#3647;2,000 (&#8377;5,800)</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Includes:</strong> Head massage, scalp treatment, relaxing hair wash, neck &amp; shoulder massage, blow dry</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Duration:</strong> ~60&ndash;75 min</div>
+          <div class="detail"><div class="detail-dot"></div> Natural &amp; vegan products used</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>After:</strong> Walk to BTS Asok &rarr; Nana (1 stop, 3 min) &rarr; hotel</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> Wife&rsquo;s hair will be freshly washed, styled &amp; perfect for her <strong>birthday tomorrow (2 Dec)!</strong> Head straight to hotel &mdash; sleep with fresh hair.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Day 2 Cost Summary -->
+  <div class="day-summary-card">
+    <div class="summary-title">Day 2 Expenses</div>
+    <div class="summary-row"><span class="s-label">7-Eleven HYA serum</span><span class="s-value">&#3647;100 &middot; &#8377;290</span></div>
+    <div class="summary-row"><span class="s-label">Stolen Sala (drinks &times; 2)</span><span class="s-value">&#3647;400 &middot; &#8377;1,160</span></div>
+    <div class="summary-row"><span class="s-label">SEA LIFE Bangkok &times; 2 (Klook)</span><span class="s-value">&#3647;1,600 &middot; &#8377;4,640</span></div>
+    <div class="summary-row"><span class="s-label">True Alpha Hub photobooth</span><span class="s-value">&#3647;160 &middot; &#8377;464</span></div>
+    <div class="summary-row"><span class="s-label">Mango sticky rice &times; 2</span><span class="s-value">&#3647;200 &middot; &#8377;580</span></div>
+    <div class="summary-row"><span class="s-label">MBK pajama sets</span><span class="s-value">&#3647;500 &middot; &#8377;1,450</span></div>
+    <div class="summary-row"><span class="s-label">Tourist boat (Grab + boat &times; 2)</span><span class="s-value">&#3647;180 &middot; &#8377;522</span></div>
+    <div class="summary-row"><span class="s-label">Dinner &mdash; ICON Siam &times; 2</span><span class="s-value">&#3647;400 &middot; &#8377;1,160</span></div>
+    <div class="summary-row"><span class="s-label">Jodd Fairs (tops + snack)</span><span class="s-value">&#3647;300 &middot; &#8377;870</span></div>
+    <div class="summary-row"><span class="s-label">Homsleepsalon hair spa &times; 2</span><span class="s-value">&#3647;2,000 &middot; &#8377;5,800</span></div>
+    <div class="summary-row"><span class="s-label">BTS + Grab taxis</span><span class="s-value">&#3647;400 &middot; &#8377;1,160</span></div>
+    <div class="summary-row total"><span class="s-label">Day 2 Total</span><span class="s-value">&#3647;6,240 &middot; &#8377;18,096</span></div>
+
+    <div class="split-row">
+      <div class="split-box cash">
+        <div class="split-amount">&#3647;3,280</div>
+        <div class="split-label">Cash (&#8377;9,512)</div>
+      </div>
+      <div class="split-box card">
+        <div class="split-amount">&#3647;2,960</div>
+        <div class="split-label">Visa Card (&#8377;8,584)</div>
+      </div>
+    </div>
+
+    <div class="split-note">
+      <strong>Cash:</strong> HYA &#3647;100, mango &#3647;200, MBK &#3647;500, boat &#3647;180, Jodd Fairs &#3647;300, Homsleepsalon &#3647;2,000<br>
+      <strong>Card:</strong> SEA LIFE &#3647;1,600 (Klook), Stolen Sala &#3647;400, photobooth &#3647;160, dinner &#3647;400, BTS/Grab &#3647;400<br>
+      <strong>Rate:</strong> 1 THB = &#8377;2.90
+    </div>
+  </div>
+</div>
+
+<div class="day-content" id="day3">
+  <div class="day-title">Day 3 &mdash; 2 Dec 2026</div>
+  <div class="placeholder">
+    <div class="placeholder-icon">&#128205;</div>
+    <p>Share your plans and I&rsquo;ll fill this in<br>with routes, costs &amp; veg food spots.</p>
+  </div>
+</div>
+
+<div class="day-content" id="day4">
+  <div class="day-title">Day 4 &mdash; 3 Dec 2026</div>
+  <div class="placeholder">
+    <div class="placeholder-icon">&#128205;</div>
+    <p>Day trip to Pattaya? Ayutthaya?<br>Let me know your plans!</p>
+  </div>
+</div>
+
+<div class="day-content" id="day5">
+  <div class="day-title">Day 5 &mdash; 4 Dec 2026</div>
+  <div class="placeholder">
+    <div class="placeholder-icon">&#128205;</div>
+    <p>Plans coming soon&hellip;</p>
+  </div>
+</div>
+
+<div class="day-content" id="day6">
+  <div class="day-title">Day 6 &mdash; 5 Dec 2026</div>
+  <div class="placeholder">
+    <div class="placeholder-icon">&#128205;</div>
+    <p>Last full day in Bangkok!<br>Tell me your plans.</p>
+  </div>
+</div>
+
+<div class="day-content" id="day7">
+  <div class="day-title">Day 7 &mdash; 6 Dec 2026</div>
+  <div class="placeholder">
+    <div class="placeholder-icon">&#9992;&#65039;</div>
+    <p>Departure day!<br>Share your return flight details.</p>
+  </div>
+</div>
+
+<!-- ═══ BUDGET SECTION ═══ -->
+<div class="section-page" id="budgetSection">
+  <div class="section-title">Budget</div>
+  <div class="section-sub">Track expenses &middot; Cash vs Card split</div>
+
+  <div class="exchange-card">
+    <div class="exchange-rate">1 THB = &#8377;2.90</div>
+    <div class="exchange-sub">Conversion rate &middot; Nov 2026</div>
+  </div>
+
+  <div class="budget-card">
+    <div class="budget-header">
+      <span class="b-label">Tracked so far</span>
+      <span class="b-value">&#8377;91,185</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:29%"></div></div>
+    <div class="progress-label">Day 1&ndash;2 of 7 planned</div>
+  </div>
+
+  <div class="day-summary-card">
+    <div class="summary-title">Day-wise Breakdown</div>
+    <div class="summary-row"><span class="s-label">Day 1 &mdash; Arrival &amp; Settle In</span><span class="s-value">&#3647;25,030 &middot; &#8377;73,089</span></div>
+    <div class="summary-row"><span class="s-label">Day 2 &mdash; Shopping, SEA LIFE &amp; Cafes</span><span class="s-value">&#3647;6,240 &middot; &#8377;18,096</span></div>
+    <div class="summary-row"><span class="s-label">Day 3</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
+    <div class="summary-row"><span class="s-label">Day 4</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
+    <div class="summary-row"><span class="s-label">Day 5</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
+    <div class="summary-row"><span class="s-label">Day 6</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
+    <div class="summary-row"><span class="s-label">Day 7 &mdash; Departure</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
+    <div class="summary-row total"><span class="s-label">Trip Total</span><span class="s-value">&#3647;31,270 &middot; &#8377;91,185</span></div>
+
+    <div class="split-row">
+      <div class="split-box cash">
+        <div class="split-amount">&#3647;2,840</div>
+        <div class="split-label">Cash (&#8377;8,236)</div>
+      </div>
+      <div class="split-box card">
+        <div class="split-amount">&#3647;25,930</div>
+        <div class="split-label">Visa Card (&#8377;75,197)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:12px">
+    <span class="tip-icon">&#128161;</span>
+    <span>Exchange INR &rarr; THB at <strong>SuperRich</strong> in BKK for the best rate. Avoid airport exchange counters.</span>
+  </div>
+</div>
+
+<!-- ═══ METRO SECTION ═══ -->
+<div class="section-page" id="metroSection">
+  <div class="section-title">Metro Routes</div>
+  <div class="section-sub">From BTS Nana &middot; 5 min walk from hotel</div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--amber-light)">&#127983;</div>
+      <div class="metro-dest">
+        <div class="m-name">Grand Palace / Wat Pho</div>
+        <div class="m-info">~30 min &middot; &#3647;35 / &#8377;102</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Asok</span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Sukhumvit <span class="line-badge line-mrt">MRT</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Sanam Chai</span>
+      </div></div>
+      <div class="detail"><div class="detail-dot"></div> 5 min walk from Sanam Chai to Grand Palace</div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--accent-light)">&#9962;&#65039;</div>
+      <div class="metro-dest">
+        <div class="m-name">Wat Arun</div>
+        <div class="m-info">~40 min &middot; &#3647;40 + ferry / &#8377;116+</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">MRT Sanam Chai <span class="line-badge line-mrt">MRT</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Tha Tien Pier &middot; Ferry</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--pink-light)">&#128717;</div>
+      <div class="metro-dest">
+        <div class="m-name">Siam (CentralWorld / Paragon)</div>
+        <div class="m-info">~10 min &middot; &#3647;25 / &#8377;73</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Siam (3 stops, direct)</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--green-light)">&#127981;</div>
+      <div class="metro-dest">
+        <div class="m-name">Chatuchak Weekend Market</div>
+        <div class="m-info">~30 min &middot; &#3647;35 / &#8377;102</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Asok &rarr; Sukhumvit <span class="line-badge line-mrt">MRT</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Chatuchak Park</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--accent-light)">&#127983;</div>
+      <div class="metro-dest">
+        <div class="m-name">Chinatown (Yaowarat)</div>
+        <div class="m-info">~25 min &middot; &#3647;30 / &#8377;87</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Sukhumvit <span class="line-badge line-mrt">MRT</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Wat Mangkon</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--purple-light)">&#127750;</div>
+      <div class="metro-dest">
+        <div class="m-name">Asiatique Night Market</div>
+        <div class="m-info">~25 min &middot; &#3647;30 / &#8377;87 + free boat</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Saphan Taksin <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Free shuttle boat</span>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="metro-card" onclick="toggle(this)">
+    <div class="metro-header">
+      <div class="tl-icon" style="background:var(--blue-light)">&#127979;</div>
+      <div class="metro-dest">
+        <div class="m-name">ICON Siam</div>
+        <div class="m-info">~30 min &middot; &#3647;30 / &#8377;87 + free shuttle</div>
+      </div>
+      <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+    </div>
+    <div class="metro-details">
+      <div class="route-box"><div class="route-stops">
+        <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Siam &rarr; Krung Thonburi <span class="line-badge line-bts">BTS</span></span>
+        <span class="route-arrow">&rarr;</span>
+        <span class="route-stop">Free shuttle to ICON Siam</span>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CHECKLIST SECTION ═══ -->
+<div class="section-page" id="checklistSection">
+  <div class="section-title">Pre-Trip Checklist</div>
+  <div class="section-sub">Tap to check off completed items</div>
+
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Book Klook SIM Card (30GB data-only)<small>Pick up at BKK Airport 2nd floor Klook counter</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Thailand Visa / Visa-on-arrival documents<small>Indian passport: VOA available. Carry passport photos + 1,000 THB fee</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Exchange INR &rarr; THB cash<small>Carry at least 10,000 THB per person for immigration</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Enable international transactions on Visa card<small>Inform bank &middot; Set Thailand as travel destination</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Download offline Google Maps &mdash; Bangkok<small>Download the Bangkok region for offline navigation</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Hotel booking confirmation<small>Ibis Styles Sukhumvit 4 &mdash; keep printout or screenshot</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Travel insurance<small>Covers medical, trip cancellation, lost baggage</small></div>
+  </div>
+  <div class="check-item" onclick="this.classList.toggle('done');saveChecks()">
+    <div class="check-box"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="check-text">Save hotel address in Thai<small>&#3650;&#3619;&#3591;&#3649;&#3619;&#3617; &#3652;&#3629;&#3610;&#3636;&#3626; &#3626;&#3652;&#3605;&#3621;&#3660; &#3585;&#3619;&#3640;&#3591;&#3648;&#3607;&#3614; &#3626;&#3640;&#3586;&#3640;&#3617;&#3623;&#3636;&#3607; 4 &mdash; show to taxi or BTS staff</small></div>
+  </div>
+</div>
+
+<!-- ═══ BOTTOM NAVIGATION ═══ -->
+<div class="bottom-nav">
+  <button class="nav-btn active" data-section="itinerary" onclick="navTo('itinerary')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Days
+  </button>
+  <button class="nav-btn" data-section="budgetSection" onclick="navTo('budgetSection')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    Budget
+  </button>
+  <button class="nav-btn" data-section="metroSection" onclick="navTo('metroSection')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Metro
+  </button>
+  <button class="nav-btn" data-section="checklistSection" onclick="navTo('checklistSection')">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Checklist
+  </button>
+</div>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('expanded');
+}
+
+document.querySelectorAll('.day-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.day-pill').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.day-content').forEach(d => d.classList.remove('active'));
+    pill.classList.add('active');
+    document.getElementById('day' + pill.dataset.day).classList.add('active');
+  });
+});
+
+function navTo(section) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.day-content').forEach(d => d.style.display = 'none');
+  document.querySelector('.day-selector').style.display = 'none';
+
+  if (section === 'itinerary') {
+    document.querySelector('.day-selector').style.display = 'flex';
+    document.querySelectorAll('.day-content').forEach(d => d.style.display = '');
+    const active = document.querySelector('.day-pill.active');
+    if (active) document.getElementById('day' + active.dataset.day).classList.add('active');
+  } else {
+    document.getElementById(section).classList.add('active');
+  }
+
+  document.querySelector(`.nav-btn[data-section="${section}"]`).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function saveChecks() {
+  const states = [...document.querySelectorAll('.check-item')].map(i => i.classList.contains('done'));
+  localStorage.setItem('bkk_checks', JSON.stringify(states));
+}
+
+function loadChecks() {
+  try {
+    const states = JSON.parse(localStorage.getItem('bkk_checks') || '[]');
+    document.querySelectorAll('.check-item').forEach((item, i) => {
+      if (states[i]) item.classList.add('done');
+    });
+  } catch(e) {}
+}
+
+loadChecks();
+</script>
+
+</body>
+</html>
