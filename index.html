@@ -898,7 +898,7 @@
 <!-- ═══ STATS ═══ -->
 <div class="stats-bar">
   <div class="stat">
-    <div class="stat-value" id="totalSpend">₹152.9K</div>
+    <div class="stat-value" id="totalSpend">₹154.8K</div>
     <div class="stat-label">Total</div>
   </div>
   <div class="stat">
@@ -919,7 +919,7 @@
   <button class="day-pill" data-day="4"><span class="day-num">Day 4</span><span class="day-date">3 Dec</span></button>
   <button class="day-pill" data-day="5"><span class="day-num">Day 5</span><span class="day-date">4 Dec</span></button>
   <button class="day-pill" data-day="6"><span class="day-num">Day 6</span><span class="day-date">5 Dec</span></button>
-  <button class="day-pill placeholder" data-day="7"><span class="day-num">Day 7</span><span class="day-date">6 Dec</span></button>
+  <button class="day-pill" data-day="7"><span class="day-num">Day 7</span><span class="day-date">6 Dec</span></button>
 </div>
 
 <!-- ═══════════ DAY 1 ═══════════ -->
@@ -3353,10 +3353,200 @@
 </div>
 
 <div class="day-content" id="day7">
-  <div class="day-title">Day 7 &mdash; 6 Dec 2026</div>
-  <div class="placeholder">
-    <div class="placeholder-icon">&#9992;&#65039;</div>
-    <p>Departure day!<br>Share your return flight details.</p>
+  <div class="day-title">Departure Day &mdash; Bye Bangkok!</div>
+  <div class="day-subtitle">Breakfast &middot; Checkout &middot; BTS + ARL to BKK &middot; AI 6590 at 13:50</div>
+
+  <div class="timeline">
+
+    <!-- Breakfast -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">08:00</div>
+        <div class="tl-dot food"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon food">&#127858;</div>
+          <div class="tl-content">
+            <div class="tl-name">Last Breakfast in Bangkok</div>
+            <div class="tl-desc">Ibis Bangkok Sukhumvit 4 &middot; Included</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount"><span class="tag tag-free">Free</span></div>
+            <div class="pay-method">Included</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> Enjoy the last breakfast &mdash; no rush, flight is at 1:50 PM</div>
+          <div class="detail"><div class="detail-dot"></div> Double-check room: chargers, SIM card, DJI Osmo, passport, all shopping bags</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">09:30</div>
+        <div class="tl-dot hotel"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon hotel">&#127976;</div>
+          <div class="tl-content">
+            <div class="tl-name">Hotel Checkout</div>
+            <div class="tl-desc">Ibis Bangkok Sukhumvit 4 &middot; Check nothing left behind</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&mdash;</div>
+            <div class="pay-method">Pre-paid</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> Checkout and collect all luggage</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>VAT Refund:</strong> If you got PP10 forms (DJI Osmo etc.), keep them ready for airport claim</div>
+          <div class="detail"><div class="detail-dot"></div> Walk 5 min to BTS Nana</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BTS + ARL to Airport -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">09:45</div>
+        <div class="tl-dot transport"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon transport">&#128647;</div>
+          <div class="tl-content">
+            <div class="tl-name">BTS + ARL to Suvarnabhumi</div>
+            <div class="tl-desc">Nana &rarr; Phaya Thai &rarr; ARL &rarr; BKK &middot; ~45 min</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&#3647;160</div>
+            <div class="amount-sub">&#8377;464</div>
+            <div class="pay-method">Cash / Rabbit</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Route (reverse of Day 1):</strong></div>
+          <div class="route-box"><div class="route-stops">
+            <span class="route-stop">Nana <span class="line-badge line-bts">BTS</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Phaya Thai (4 stops)</span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">ARL <span class="line-badge line-arl">ARL</span></span>
+            <span class="route-arrow">&rarr;</span>
+            <span class="route-stop">Suvarnabhumi (~30 min)</span>
+          </div></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>BTS:</strong> Nana &rarr; Phaya Thai (&#3647;35/person, ~10 min)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>ARL:</strong> Phaya Thai &rarr; Suvarnabhumi (&#3647;45/person, ~30 min)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>For 2:</strong> &#3647;160 (&#8377;464) total</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Arrive airport:</strong> ~10:30 AM &mdash; 3+ hours before flight</div>
+          <div class="tip"><span class="tip-icon">&#128161;</span> With luggage, use elevators at BTS/ARL stations. At Phaya Thai, follow signs for ARL transfer &mdash; it&rsquo;s a short walk between platforms.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Airport -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">10:30</div>
+        <div class="tl-dot flight"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon flight">&#9992;&#65039;</div>
+          <div class="tl-content">
+            <div class="tl-name">Suvarnabhumi Airport</div>
+            <div class="tl-desc">Check-in &middot; VAT refund &middot; Immigration &middot; Duty free</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">&mdash;</div>
+            <div class="pay-method">&mdash;</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>3+ hours buffer</strong> &mdash; ample time for everything</div>
+          <div class="detail" style="margin-top:8px"><div class="detail-dot"></div> <strong>10:30 &mdash; Arrive BKK airport</strong></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>10:30&ndash;10:45 &mdash; VAT Refund</strong> (if applicable): Go to VAT Refund counter BEFORE check-in (Departures hall, 4F). Show PP10 forms + passport + purchased items. Get stamp first, claim cash after immigration</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>10:45&ndash;11:15 &mdash; Check-in + luggage drop</strong>: AI 6590 counter. Keep DJI Osmo in hand luggage</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>11:15&ndash;12:00 &mdash; Immigration</strong>: Expect 30&ndash;45 min queue for departure (less than arrival but still busy)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>12:00&ndash;12:15 &mdash; VAT Refund cash claim</strong> (after immigration, inside duty free zone)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>12:15&ndash;13:30 &mdash; Duty free shopping + boarding gate</strong></div>
+          <div class="detail"><div class="detail-dot"></div> Last-minute buys: King Power duty free (Thai snacks, cosmetics, alcohol cheaper here)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>13:30 &mdash; Boarding</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flight -->
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-time">13:50</div>
+        <div class="tl-dot flight"></div>
+        <div class="tl-line" style="background:transparent"></div>
+      </div>
+      <div class="tl-card" onclick="toggle(this)">
+        <div class="tl-card-header">
+          <div class="tl-icon flight">&#9992;&#65039;</div>
+          <div class="tl-content">
+            <div class="tl-name">Bangkok &rarr; Pune</div>
+            <div class="tl-desc">AI 6590 &middot; Suvarnabhumi &rarr; Lohegaon</div>
+          </div>
+          <div class="tl-price">
+            <div class="amount">Booked</div>
+            <div class="pay-method">Pre-paid</div>
+          </div>
+          <div class="tl-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tl-details">
+          <div class="tl-detail-divider"></div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Depart:</strong> 13:50 BKK &rarr; <strong>Arrive:</strong> 17:00 Pune (local time)</div>
+          <div class="detail"><div class="detail-dot"></div> <strong>Flight:</strong> AI 6590 &middot; Duration: ~4h 40m</div>
+          <div class="detail"><div class="detail-dot"></div> Thailand is 1.5 hrs ahead of IST &mdash; you land at 5 PM India time</div>
+          <div class="detail"><div class="detail-dot"></div> Safe travels home! &#127470;&#127475;</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Day 7 Cost Summary -->
+  <div class="day-summary-card">
+    <div class="summary-title">Day 7 Expenses &mdash; Departure</div>
+    <div class="summary-row"><span class="s-label">BTS + ARL to airport &times; 2</span><span class="s-value">&#3647;160 &middot; &#8377;464</span></div>
+    <div class="summary-row"><span class="s-label">Duty free shopping (optional)</span><span class="s-value">&#3647;500 &middot; &#8377;1,450</span></div>
+    <div class="summary-row total"><span class="s-label">Day 7 Total</span><span class="s-value">&#3647;660 &middot; &#8377;1,914</span></div>
+
+    <div class="split-row">
+      <div class="split-box cash">
+        <div class="split-amount">&#3647;160</div>
+        <div class="split-label">Cash (&#8377;464)</div>
+      </div>
+      <div class="split-box card">
+        <div class="split-amount">&#3647;500</div>
+        <div class="split-label">Visa Card (&#8377;1,450)</div>
+      </div>
+    </div>
+
+    <div class="split-note">
+      <strong>Cash:</strong> BTS + ARL &#3647;160<br>
+      <strong>Card:</strong> Duty free &#3647;500 (optional)<br>
+      <strong>Rate:</strong> 1 THB = &#8377;2.90
+    </div>
   </div>
 </div>
 
@@ -3373,10 +3563,10 @@
   <div class="budget-card">
     <div class="budget-header">
       <span class="b-label">Tracked so far</span>
-      <span class="b-value">&#8377;152,903</span>
+      <span class="b-value">&#8377;154,817</span>
     </div>
-    <div class="progress-bar"><div class="progress-fill" style="width:86%"></div></div>
-    <div class="progress-label">Day 1&ndash;6 of 7 planned</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+    <div class="progress-label">All 7 days planned!</div>
   </div>
 
   <div class="day-summary-card">
@@ -3387,8 +3577,8 @@
     <div class="summary-row"><span class="s-label">Day 4 &mdash; Temples</span><span class="s-value">&#3647;8,164 &middot; &#8377;23,676</span></div>
     <div class="summary-row"><span class="s-label">Day 5 &mdash; Ancient City &amp; Muay Thai</span><span class="s-value">&#3647;4,813 &middot; &#8377;13,958</span></div>
     <div class="summary-row"><span class="s-label">Day 6 &mdash; Chatuchak &amp; Fireworks</span><span class="s-value">&#3647;3,700 &middot; &#8377;10,730</span></div>
-    <div class="summary-row"><span class="s-label">Day 7 &mdash; Departure</span><span class="s-value" style="color:var(--text-tertiary)">Pending</span></div>
-    <div class="summary-row total"><span class="s-label">Trip Total</span><span class="s-value">&#3647;52,725 &middot; &#8377;152,903</span></div>
+    <div class="summary-row"><span class="s-label">Day 7 &mdash; Departure</span><span class="s-value">&#3647;660 &middot; &#8377;1,914</span></div>
+    <div class="summary-row total"><span class="s-label">Trip Total (7 Days)</span><span class="s-value">&#3647;53,385 &middot; &#8377;154,817</span></div>
 
     <div class="split-row">
       <div class="split-box cash">
